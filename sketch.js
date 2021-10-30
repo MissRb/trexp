@@ -33,23 +33,25 @@ function preload(){
 }
 
 function setup() {
-  createCanvas(600, 200);
+  createCanvas(windowWidth,windowHeight);
   
-  trex = createSprite(50,180,20,50);
+  
+  
+  trex = createSprite(50,height-50,20,50);
   
   trex.addAnimation("running", trex_running);
   trex.addAnimation("collided", trex_collided);
   trex.scale = 0.5;
   
-  ground = createSprite(200,180,400,20);
+  ground = createSprite(width/2,height,width,400,20);
   ground.addImage("ground",groundImage);
   ground.x = ground.width /2;
   ground.velocityX = -(6 + 3*score/100);
   
-  gameOver = createSprite(300,100);
+  gameOver = createSprite(width/2,height/2-50);
   gameOver.addImage(gameOverImg);
   
-  restart = createSprite(300,140);
+  restart = createSprite(width/2,height/2);
   restart.addImage(restartImg);
   
   gameOver.scale = 0.5;
@@ -58,8 +60,9 @@ function setup() {
   gameOver.visible = false;
   restart.visible = false;
   
-  invisibleGround = createSprite(200,190,400,10);
+  invisibleGround = createSprite(width/2,height,width,10);
   invisibleGround.visible = false;
+ //  invisibleGround.shapeColor = "pink";
   
   cloudsGroup = new Group();
   obstaclesGroup = new Group();
@@ -69,12 +72,18 @@ function setup() {
 
 function draw() {
   //trex.debug = true;
-  background(255);
+  background("lightblue");
   text("Score: "+ score, 500,50);
   
   if (gameState===PLAY){
     score = score + Math.round(getFrameRate()/60);
     ground.velocityX = -(6 + 3*score/100);
+    
+    if ((touches.length>0||keyDown("space")) && trex.y>=height-159){
+      //jumpSound.play( )
+      //trex.velocity=-10;
+      touches=[]    
+    }
     //change the trex animation
     trex.changeAnimation("running", trex_running);
     
@@ -179,7 +188,7 @@ function spawnObstacles() {
     }
     
     //assign scale and lifetime to the obstacle           
-    obstacle.scale = 0.5;
+   obstacle.scale = 0.5;
     obstacle.lifetime = 300;
     //add each obstacle to the group
     obstaclesGroup.add(obstacle);
